@@ -30,9 +30,9 @@ while True:
     if select == 1:
         module_cadastro.cliente()
     elif select == 2:
-        module_filme.filme()
+        module_filme.filmes()
     elif select == 3:
-        module_jogos.jogo()
+        module_jogos.jogos()
     elif select == 4:
         print("Nunca é um adeus :)")
         break
