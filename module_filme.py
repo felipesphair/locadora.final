@@ -1,5 +1,6 @@
 import csv
 import os
+from time import sleep
 import pandas as pd
 from pip import main
 
@@ -160,7 +161,21 @@ def filmes():
         url = './emprestimo.csv'
         df = pd.read_csv(url)
         print(df)
-
+    
+        
+    def checkout():
+        print('\n------ Devoluçao ------\n')
+        while True:
+            days = int(input("Digite os dias de aluguel: "))
+            if isnumber(days):
+                valor = days * 2
+                excluir_filme()
+                print("O valor final a pagar e de {}R$".format(valor))
+                break
+            else:
+                print('\033[31mERRO!\033[m')
+        return None
+        
 
     def isnumber(value):
         try:
@@ -197,6 +212,8 @@ def filmes():
                     elif opt == 7:
                         listar_emprestimos()
                     elif opt == 8:
+                        checkout()
+                    elif opt == 9:
                         break
 
             except ValueError:
@@ -210,6 +227,7 @@ def filmes():
             "5. Listar filmes",
             "6. Registrar empréstimo",
             "7. Listar Empréstimos",
-            "8. Sair")
+            "8. Devoluçao",
+            "9. Sair")
 
     start(ops)
