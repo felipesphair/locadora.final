@@ -115,6 +115,59 @@ def filmes():
         print(df)
         return
 
+    def realizar_emprestimo():
+        print('\n------ EMPRÉSTIMOS ------\n')
+        cpf = input("Digite o cpf do cliente: ")
+        with open('clientes.csv') as clientes_csv:
+            reader_obj = csv.reader(clientes_csv, delimiter=',')
+
+            linhas = 0
+            for coluna in reader_obj:
+                if linhas == 0:
+                    linhas += 1
+                else:
+                    if coluna[0] == cpf:
+                        pesquisado = coluna[1]
+                        print(f"cpf: {pesquisado} | idade: {coluna[2]}")
+                        codigo_filme = input("Digite seu codigo_filme: ")
+                        data = input("Digite a data do filme: ")
+                        nf = input('Nome do filme: ')
+
+                        colunas = ['codigo do filme', 'cpf', 'nome', 'data', 'nome do filme']  # colunas da tabela .csv
+                        file_exists = os.path.isfile('emprestimo.csv')
+                        with open('emprestimo.csv', 'a', newline='') as emprestimo_csv:
+                            # DictWriter grava dados no formato de dicionário
+                            cadastrar = csv.DictWriter(
+                                emprestimo_csv, fieldnames=colunas, delimiter=',', lineterminator='\r\n')  # fieldnames = cpf de campos, ou seja -> colunas, divisor de dados sendo ';', lineterminator \r\n serve para quebrar a linha
+                            # caso não existe o arquivo 'file_exist', faz o fieldnames funcionar, visto que há o 'writeheader()'
+                            if not file_exists:
+                                # writeheader grava a primeira linha de arquivo csv usando os cpfs de campo pré-especificados.
+                                cadastrar.writeheader()
+                            # escrever nas linhas em respectivas 'keys' e 'values', title() -> deixar letra maiuscula
+                            cadastrar.writerow(
+                                {'codigo do filme': codigo_filme, 'cpf': cpf, 'nome': pesquisado ,'data': data})
+
+                        print('Cadastro realizado com sucesso!')
+                        return pesquisado
+                    else:
+                        linhas += 1
+            print("pessoa não localizada")
+            return None
+
+        
+    
+    def listar_emprestimos():
+        url = './emprestimo.csv'
+        df = pd.read_csv(url)
+        print(df)
+
+
+    def isnumber(value):
+        try:
+            float(value)
+        except ValueError:
+            return False
+        return True
 
     def start(ops):
         while True:
@@ -123,22 +176,31 @@ def filmes():
             for op in ops:
                 print(op)
             print("-" * 30)
-            opt = int(input("Qual opção deseja escolher: "))
 
-            if opt == 1:
-                cadastrar_filme()
-            elif opt == 2:
-                editar_filme()
-            elif opt == 3:
-                excluir_filme()
-            elif opt == 4:
-                alguem = pesquisar_filme()
-                if alguem != None:
-                    print(alguem)
-            elif opt == 5:
-                lista_de_filme()
-            elif opt == 10:
-                break
+            try:    
+                opt = int(input("Qual opção deseja escolher: "))
+                if isnumber(opt):
+                    if opt == 1:
+                        cadastrar_filme()
+                    elif opt == 2:
+                        editar_filme()
+                    elif opt == 3:
+                        excluir_filme()
+                    elif opt == 4:
+                        alguem = pesquisar_filme()
+                        if alguem != None:
+                            print(alguem)
+                    elif opt == 5:
+                        lista_de_filme()
+                    elif opt == 6:
+                        realizar_emprestimo()
+                    elif opt == 7:
+                        listar_emprestimos()
+                    elif opt == 8:
+                        break
+
+            except ValueError:
+                print('\033[31mERRO!\033[m')
                 
                 
     ops = ( "1. Cadastrar filme",
@@ -146,8 +208,8 @@ def filmes():
             "3. Excluir filme",
             "4. Pesquisar filme",
             "5. Listar filmes",
-            #"6. Registrar empréstimo",
-            #"7. Listar Empréstimos",
-            "10. Sair")
+            "6. Registrar empréstimo",
+            "7. Listar Empréstimos",
+            "8. Sair")
 
     start(ops)
